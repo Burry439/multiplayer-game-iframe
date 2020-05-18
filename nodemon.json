@@ -1,7 +1,7 @@
 {
   "type": "node",
   "request": "launch",
-  "remoteRoot": "${workspaceRoot}/games/build",
+  "remoteRoot": "${workspaceRoot}/games/Online Game/build",
   "name": "Lanuch full nodemon",
   "runtimeExecutable": "nodemon",
   "program": "${workspaceFolder}/games/Online Game/index.ts",
