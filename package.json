@@ -8,8 +8,7 @@
     "start": "npm run serve",
     "serve": "node ./build/index.js",
     "tsc": "tsc",
-    "build-ts": "tsc",
-    "postinstall": "npm run build-ts"
+    "postinstall": "npm run ts"
   },
   "author": "",
   "license": "ISC",
