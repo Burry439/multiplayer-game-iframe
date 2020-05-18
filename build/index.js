@@ -8,6 +8,8 @@ var socketInstance_1 = __importDefault(require("./socketIO/socketInstance"));
 var http_1 = __importDefault(require("http"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var cors_1 = __importDefault(require("cors"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var ExpressServer = /** @class */ (function () {
     function ExpressServer() {
         this.app = express_1.default();
@@ -15,7 +17,8 @@ var ExpressServer = /** @class */ (function () {
         this.app.use(body_parser_1.default.urlencoded({ 'extended': true, 'limit': '50mb' }));
         this.app.use(cors_1.default({ 'origin': '*', 'methods': ['*', 'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST'], 'allowedHeaders': ['*', 'authorization', 'content-type'] }));
         //this.app.use(this.router)
-        this.app.use('/', express_1.default.static("./src/game"));
+        this.app.use('/', express_1.default.static(__dirname + "/game"));
+        console.log(__dirname);
         this.server = http_1.default.createServer(this.app);
         this.server.listen(process.env.PORT || 7000);
         this.socketInstance = socketInstance_1.default.getSocketInstance(this.server);
