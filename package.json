@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run serve",
     "serve": "node ./build/index.js",
+    "tsc": "tsc",
     "build-ts": "tsc",
     "postinstall": "npm run build-ts"
   },
