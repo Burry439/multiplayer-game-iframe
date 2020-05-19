@@ -1,5 +1,4 @@
 import express  from "express";
-import path from "path"
 import SocketInstance from "./socketIO/socketInstance"
 import http, { Server } from 'http'
 import bodyParser from 'body-parser'
