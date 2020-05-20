@@ -8,8 +8,10 @@ var Player = /** @class */ (function () {
     function Player(_username, _id) {
         this.id = _id;
         this.username = _username;
-        this.position = new vector2_1.default();
-        this.connectedToUnity = false,
+        this.position = new vector2_1.default(),
+            this.tankRotation = new Number(0),
+            this.barrelRotation = new Number(0),
+            this.connectedToUnity = false,
             this.isDuplicate = false;
     }
     return Player;

@@ -6,7 +6,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var player_1 = __importDefault(require("./player"));
 var Game = /** @class */ (function () {
     function Game() {
+        var _this = this;
         this.players = [];
+        this.bullets = [];
+        this.unitySockets = [];
+        setInterval(function () {
+            _this.bullets.forEach(function (bullet) {
+                var isDestroyed = bullet.onUpdate();
+                if (isDestroyed) {
+                    var index = _this.bullets.indexOf(bullet);
+                    if (index > -1) {
+                        _this.bullets.splice(index, 1);
+                        var returnData_1 = {
+                            id: bullet.id,
+                        };
+                        _this.unitySockets.forEach(function (socket) {
+                            socket.emit("serverUnspawn", returnData_1);
+                        });
+                    }
+                }
+                else {
+                    var returnData_2 = {
+                        id: bullet.id,
+                        position: {
+                            x: bullet.position.x,
+                            y: bullet.position.y,
+                        }
+                    };
+                    _this.unitySockets.forEach(function (socket) {
+                        socket.emit("updatePosition", returnData_2);
+                    });
+                }
+            });
+        }, 100, 0);
     }
     Game.prototype.removePlayer = function (playerId) {
         var _this = this;
@@ -19,6 +51,15 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.getPlayers = function () {
         return this.players;
+    };
+    Game.prototype.getBullets = function () {
+        return this.bullets;
+    };
+    Game.prototype.addUnitySocket = function (socket) {
+        this.unitySockets.push(socket);
+    };
+    Game.prototype.addBullet = function (bullet) {
+        this.bullets.push(bullet);
     };
     Game.prototype.getPlayerById = function (playerId) {
         return this.players.find(function (player) {
