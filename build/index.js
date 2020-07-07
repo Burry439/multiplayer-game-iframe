@@ -17,7 +17,7 @@ var ExpressServer = /** @class */ (function () {
         this.app.use(body_parser_1.default.urlencoded({ 'extended': true, 'limit': '50mb' }));
         this.app.use(cors_1.default({ 'origin': '*', 'methods': ['*', 'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST'], 'allowedHeaders': ['*', 'authorization', 'content-type'] }));
         //this.app.use(this.router)
-        this.app.use('/', express_1.default.static(__dirname + "/game"));
+        this.app.use('/mulitPlayerGame', express_1.default.static(__dirname + "/game"));
         console.log(__dirname);
         this.server = http_1.default.createServer(this.app);
         this.server.listen(process.env.PORT || 7000);

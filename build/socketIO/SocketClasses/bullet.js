@@ -20,12 +20,16 @@ var vector2_1 = __importDefault(require("./vector2"));
 var serverObject_1 = __importDefault(require("./serverObject"));
 var Bullet = /** @class */ (function (_super) {
     __extends(Bullet, _super);
-    function Bullet() {
-        var _this = _super.call(this) || this;
-        _this.direction = new vector2_1.default();
+    function Bullet(_name, _activator, _position, _direction) {
+        var _this = this;
+        console.log(_direction);
+        _this = _super.call(this) || this;
+        _this.name = _name;
+        _this.activator = _activator;
+        _this.position = new vector2_1.default(_position.x, _position.y);
+        _this.direction = new vector2_1.default(_direction.x, _direction.y);
         _this.speed = 0.5;
         _this.isDestroyed = false;
-        _this.activator = '';
         return _this;
     }
     Bullet.prototype.onUpdate = function () {

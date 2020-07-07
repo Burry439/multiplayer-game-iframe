@@ -1,7 +1,8 @@
 import Player from "./player";
-import PlayerDisconnected from "../SocketInterfaces/playerDisconnect";
 import Bullet from "./bullet";
 import { Socket } from "socket.io";
+import UnitySocket from "../SocketInterfaces/unitySocket";
+import UnityIntervalSocketListener from "../unitySockets/unityIntervalSocketListener";
 
 export default class Game {
 
@@ -9,48 +10,25 @@ export default class Game {
    // private playerId : String;
     private players : Player[]
     private bullets : Bullet[]
-    private unitySockets : Socket[];
-
+    private unitySockets : UnitySocket[];
+    private unityIntervalSocketListener : UnityIntervalSocketListener;
     private constructor(){
         this.players = []
         this.bullets = []
         this.unitySockets = []
-        setInterval(() =>{
-            this.bullets.forEach((bullet) =>{
-                const isDestroyed = bullet.onUpdate()
+        this.unityIntervalSocketListener = new UnityIntervalSocketListener(this)
+    }
 
-                if(isDestroyed){
-                    const index = this.bullets.indexOf(bullet)
-                    if(index > -1){
-                        this.bullets.splice(index,1)
-
-                        const returnData = {
-                            id : bullet.id,
-                        }
-                        
-                        this.unitySockets.forEach(socket => {
-                            socket.emit("serverUnspawn", returnData)
-                        });
-                       
-                    }
-                } else {
-                    const returnData = {
-                        id : bullet.id,
-                        position : {
-                            x : bullet.position.x,
-                            y : bullet.position.y,
-                        }
-                    }
-
-                    this.unitySockets.forEach(socket => {
-                        socket.emit("updatePosition", returnData)
-                    });
-                    
-                }
-            });
-            
-
-        },100,0)
+    public despawnBullet(bullet : Bullet) {
+        console.log("destroy bullet: ", bullet.id)
+        const index = this.bullets.indexOf(bullet)
+        if(index > -1){
+            this.bullets.splice(index,1)
+            const returnData = {
+                id : bullet.id,
+            }   
+            return returnData
+        }
     }
 
     public removePlayer(playerId : string){
@@ -69,8 +47,22 @@ export default class Game {
         return this.bullets
     }
 
-    public addUnitySocket(socket : Socket){
+    public addUnitySocket(socket : UnitySocket){
         this.unitySockets.push(socket);
+    }
+
+    
+    public removeUnitySocket(playerId : string){
+        this.unitySockets.forEach((unitySocket : UnitySocket, i : number) =>{
+            if(unitySocket.playerId == playerId) {      
+                //remove the disconnected player player from players array
+                this.unitySockets.splice(i, 1)              
+            }
+        })
+    }
+
+    public getUnitySocket() : UnitySocket[]{
+        return this.unitySockets
     }
 
     public addBullet(bullet : Bullet){

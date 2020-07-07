@@ -13,7 +13,7 @@ var UnitySocketListener = /** @class */ (function () {
         //For testing on unity
         // this.socket.on("addUnityUser",() =>{
         //     this.socket.join("unity")
-        //     this.gameInstance.addUnitySocket(this.socket);
+        //     this.gameInstance.addUnitySocket({playerId : thisPlayerId , socket : _this.socket});
         //     const id = Math.floor((Math.random() * 100) + 1);
         //     thisPlayerId = id.toString()
         //     this.player = this.gameInstance.createAndAddNewPlayer("test",id.toString())       
@@ -54,7 +54,7 @@ var UnitySocketListener = /** @class */ (function () {
                 }
             });
             if (_this.player && _this.player.connectedToUnity == false) {
-                _this.gameInstance.addUnitySocket(_this.socket);
+                _this.gameInstance.addUnitySocket({playerId : thisPlayerId , socket : _this.socket});
                 thisPlayerId = _this.player.id;
                 _this.player.connectedToUnity = true;
                 //tell sender to regeister

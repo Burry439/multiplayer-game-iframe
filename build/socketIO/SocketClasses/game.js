@@ -4,42 +4,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var player_1 = __importDefault(require("./player"));
+var unityIntervalSocketListener_1 = __importDefault(require("../unitySockets/unityIntervalSocketListener"));
 var Game = /** @class */ (function () {
     function Game() {
-        var _this = this;
         this.players = [];
         this.bullets = [];
         this.unitySockets = [];
-        setInterval(function () {
-            _this.bullets.forEach(function (bullet) {
-                var isDestroyed = bullet.onUpdate();
-                if (isDestroyed) {
-                    var index = _this.bullets.indexOf(bullet);
-                    if (index > -1) {
-                        _this.bullets.splice(index, 1);
-                        var returnData_1 = {
-                            id: bullet.id,
-                        };
-                        _this.unitySockets.forEach(function (socket) {
-                            socket.emit("serverUnspawn", returnData_1);
-                        });
-                    }
-                }
-                else {
-                    var returnData_2 = {
-                        id: bullet.id,
-                        position: {
-                            x: bullet.position.x,
-                            y: bullet.position.y,
-                        }
-                    };
-                    _this.unitySockets.forEach(function (socket) {
-                        socket.emit("updatePosition", returnData_2);
-                    });
-                }
-            });
-        }, 100, 0);
+        this.unityIntervalSocketListener = new unityIntervalSocketListener_1.default(this);
     }
+    Game.prototype.despawnBullet = function (bullet) {
+        console.log("destroy bullet: ", bullet.id);
+        var index = this.bullets.indexOf(bullet);
+        if (index > -1) {
+            this.bullets.splice(index, 1);
+            var returnData = {
+                id: bullet.id,
+            };
+            return returnData;
+        }
+    };
     Game.prototype.removePlayer = function (playerId) {
         var _this = this;
         this.players.forEach(function (player, i) {
@@ -57,6 +40,18 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.addUnitySocket = function (socket) {
         this.unitySockets.push(socket);
+    };
+    Game.prototype.removeUnitySocket = function (playerId) {
+        var _this = this;
+        this.unitySockets.forEach(function (unitySocket, i) {
+            if (unitySocket.playerId == playerId) {
+                //remove the disconnected player player from players array
+                _this.unitySockets.splice(i, 1);
+            }
+        });
+    };
+    Game.prototype.getUnitySocket = function () {
+        return this.unitySockets;
     };
     Game.prototype.addBullet = function (bullet) {
         this.bullets.push(bullet);
