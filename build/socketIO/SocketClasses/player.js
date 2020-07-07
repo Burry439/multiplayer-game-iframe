@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var vector2_1 = __importDefault(require("./vector2"));
 var Player = /** @class */ (function () {
+    // connectedToUnity : Boolean
+    // isDuplicate : Boolean
     function Player(_username, _id) {
         this.id = _id;
         this.username = _username;
@@ -15,8 +17,8 @@ var Player = /** @class */ (function () {
         this.isDead = false;
         this.respawnTicker = 0;
         this.respawnTime = 0;
-        this.connectedToUnity = false;
-        this.isDuplicate = false;
+        // this.connectedToUnity = false
+        // this.isDuplicate = false
     }
     Player.prototype.respawnCounter = function () {
         this.respawnTicker += 1;

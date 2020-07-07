@@ -10,8 +10,8 @@ export default  class Player {
     isDead : boolean
     respawnTicker : number
     respawnTime : number
-    connectedToUnity : Boolean
-    isDuplicate : Boolean
+    // connectedToUnity : Boolean
+    // isDuplicate : Boolean
     constructor(_username : String, _id : String){
         this.id = _id
         this.username = _username
@@ -22,8 +22,8 @@ export default  class Player {
         this.isDead = false
         this.respawnTicker = 0
         this.respawnTime = 0
-        this.connectedToUnity = false
-        this.isDuplicate = false
+        // this.connectedToUnity = false
+        // this.isDuplicate = false
     }
 
     respawnCounter(){

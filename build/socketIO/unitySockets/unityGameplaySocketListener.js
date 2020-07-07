@@ -47,8 +47,11 @@ var UnityGameplaySocketListener = /** @class */ (function () {
                             }
                             var returnData_2 = _this.gameInstance.despawnBullet(bullet);
                             if (returnData_2) {
-                                _this.gameInstance.getUnitySocket().forEach(function (unitySocket) {
-                                    unitySocket.socket.emit("serverUnspawn", returnData_2);
+                                // this.gameInstance.getUnitySocket().forEach(unitySocket => {
+                                //     unitySocket.socket.emit("serverUnspawn", returnData)
+                                // });
+                                _this.gameInstance.getGameConnections().forEach(function (gameConnection) {
+                                    gameConnection.unitySocket.emit("serverUnspawn", returnData_2);
                                 });
                             }
                         }

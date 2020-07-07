@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var UnityIntervalSocketListener = /** @class */ (function () {
     function UnityIntervalSocketListener(_gameInstance) {
         var _this = this;
+        console.log("in constroctor");
         console.log(_gameInstance);
         this.gameInstance = _gameInstance;
         UnityIntervalSocketListener.interval = setInterval(function () {
@@ -12,8 +13,11 @@ var UnityIntervalSocketListener = /** @class */ (function () {
                     var returnData_1 = _this.gameInstance.despawnBullet(bullet);
                     //should we remove a bullet
                     if (returnData_1) {
-                        _this.gameInstance.getUnitySocket().forEach(function (unitySocket) {
-                            unitySocket.socket.emit("serverUnspawn", returnData_1);
+                        _this.gameInstance.getGameConnections().forEach(function (gameConection) {
+                            if (gameConection.unitySocket) {
+                                //game may still be loading
+                                gameConection.unitySocket.emit("serverUnspawn", returnData_1);
+                            }
                         });
                     }
                 }
@@ -24,8 +28,8 @@ var UnityIntervalSocketListener = /** @class */ (function () {
                     };
                     for (var playerId in _this.gameInstance.getPlayers()) {
                         // since this is in an interval our data might not be in sync 
-                        if (_this.gameInstance.getUnitySocket()[playerId]) {
-                            _this.gameInstance.getUnitySocket()[playerId].socket.emit("updatePosition", returnData);
+                        if (_this.gameInstance.getGameConnections()[playerId]) {
+                            _this.gameInstance.getGameConnections()[playerId].unitySocket.emit("updatePosition", returnData);
                         }
                     }
                 }
@@ -39,8 +43,8 @@ var UnityIntervalSocketListener = /** @class */ (function () {
                             id: player.id,
                             position: player.position
                         };
-                        _this.gameInstance.getUnitySocket()[id].socket.emit("playerRespawn", returnData);
-                        _this.gameInstance.getUnitySocket()[id].socket.to("unity").emit("playerRespawn", returnData);
+                        _this.gameInstance.getGameConnections()[id].unitySocket.emit("playerRespawn", returnData);
+                        _this.gameInstance.getGameConnections()[id].unitySocket.to("unity").emit("playerRespawn", returnData);
                     }
                 }
             }

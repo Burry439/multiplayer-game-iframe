@@ -5,6 +5,7 @@ export default class UnityIntervalSocketListener {
     private static  interval : any;
     private gameInstance : Game
     constructor(_gameInstance : Game){
+        console.log("in constroctor")
         console.log(_gameInstance)
         this.gameInstance = _gameInstance;
         UnityIntervalSocketListener.interval = setInterval(() =>{
@@ -14,8 +15,12 @@ export default class UnityIntervalSocketListener {
                     let returnData = this.gameInstance.despawnBullet(bullet);
                     //should we remove a bullet
                     if(returnData){
-                        this.gameInstance.getUnitySocket().forEach(unitySocket => {
-                            unitySocket.socket.emit("serverUnspawn", returnData)
+                        this.gameInstance.getGameConnections().forEach(gameConection => {
+                            if(gameConection.unitySocket){
+                                //game may still be loading
+                                gameConection.unitySocket.emit("serverUnspawn", returnData)
+                            }
+                            
                         });
                     }
                
@@ -28,8 +33,8 @@ export default class UnityIntervalSocketListener {
                     for(let playerId in this.gameInstance.getPlayers()){
 
                         // since this is in an interval our data might not be in sync 
-                        if(this.gameInstance.getUnitySocket()[playerId]){
-                            this.gameInstance.getUnitySocket()[playerId].socket.emit("updatePosition", returnData)
+                        if(this.gameInstance.getGameConnections()[playerId]){
+                            this.gameInstance.getGameConnections()[playerId].unitySocket.emit("updatePosition", returnData)
                         }
                         
                     }          
@@ -46,12 +51,11 @@ export default class UnityIntervalSocketListener {
                             id : player.id,
                             position : player.position
                         }
-                        this.gameInstance.getUnitySocket()[id].socket.emit("playerRespawn",returnData)
-                        this.gameInstance.getUnitySocket()[id].socket.to("unity").emit("playerRespawn",returnData)
+                        this.gameInstance.getGameConnections()[id].unitySocket.emit("playerRespawn",returnData)
+                        this.gameInstance.getGameConnections()[id].unitySocket.to("unity").emit("playerRespawn",returnData)
                     }
                 }
             }
-    
         },100,0)
     }
 }

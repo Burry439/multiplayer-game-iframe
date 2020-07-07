@@ -3,6 +3,7 @@ import socketIo, { Socket } from 'socket.io';
 import { Server } from 'http';
 import UnitySocketListener from './unitySockets/unitySocketListener';
 import ReactSocketListener from './reactSockets/reactSocketListener';
+import RoomData  from '../interfaces/roomData';
 
 export default class SocketInstance {
     
@@ -16,8 +17,19 @@ export default class SocketInstance {
         this.io = socketIo(server)
         this.io.on("connection", (socket : Socket) =>{
             console.log("connection")
-            this.reactSocketListner = new ReactSocketListener(socket,this.gameInstance);
-            this.unitySocketListener = new UnitySocketListener(socket, this.gameInstance)  
+
+            socket.on("ReactConnected",(roomData : RoomData) =>{
+                console.log("react connected")
+                new ReactSocketListener(socket,this.gameInstance, roomData)
+            })
+
+            socket.on("UnityConnection",async (roomData : RoomData) =>{
+                console.log("unity connected")
+                //const gameData : GameData = await this.getGameData(roomData.gameName)
+                new UnitySocketListener(socket, this.gameInstance,roomData)
+            })
+            
+           // this.unitySocketListener = new UnitySocketListener(socket, this.gameInstance)  
         })
     } 
     

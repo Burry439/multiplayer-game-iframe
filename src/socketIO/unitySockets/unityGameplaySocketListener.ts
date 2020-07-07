@@ -2,6 +2,7 @@ import Player from "../SocketClasses/player"
 import Game from "../SocketClasses/game"
 import Bullet from "../SocketClasses/bullet"
 import { Socket } from "socket.io"
+import { GameConnection } from "../../interfaces/gameConnection"
 export default class UnityGameplaySocketListener {
     socket : Socket
     player : Player
@@ -50,9 +51,12 @@ export default class UnityGameplaySocketListener {
                             }
                             let returnData = this.gameInstance.despawnBullet(bullet)
                             if(returnData){
-                                this.gameInstance.getUnitySocket().forEach(unitySocket => {
-                                    unitySocket.socket.emit("serverUnspawn", returnData)
-                                });
+                                // this.gameInstance.getUnitySocket().forEach(unitySocket => {
+                                //     unitySocket.socket.emit("serverUnspawn", returnData)
+                                // });
+                                this.gameInstance.getGameConnections().forEach((gameConnection : GameConnection) =>{
+                                    gameConnection.unitySocket.emit("serverUnspawn", returnData)
+                                })
                             }
                         }
                     }

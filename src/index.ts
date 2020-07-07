@@ -18,7 +18,7 @@ class ExpressServer {
     this.app.use ( bodyParser.urlencoded ( { 'extended' : true , 'limit' : '50mb' } ) )
     this.app.use ( cors ( { 'origin' : '*' , 'methods' : [ '*' , 'DELETE' , 'GET' , 'OPTIONS' , 'PATCH' , 'POST' ] , 'allowedHeaders' : [ '*' , 'authorization' , 'content-type' ] } ) )
     //this.app.use(this.router)
-    this.app.use( '/mulitPlayerGame', express.static(__dirname + "/game"))
+    this.app.use( '/', express.static("build/game"))
     console.log(__dirname)
     this.server   = http.createServer ( this.app )
     this.server.listen (  process.env.PORT || 7000 )

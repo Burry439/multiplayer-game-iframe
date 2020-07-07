@@ -9,7 +9,8 @@ var Game = /** @class */ (function () {
     function Game() {
         this.players = [];
         this.bullets = [];
-        this.unitySockets = [];
+        //this.unitySockets = []
+        this.gameConnections = [];
         this.unityIntervalSocketListener = new unityIntervalSocketListener_1.default(this);
     }
     Game.prototype.despawnBullet = function (bullet) {
@@ -38,21 +39,20 @@ var Game = /** @class */ (function () {
     Game.prototype.getBullets = function () {
         return this.bullets;
     };
-    Game.prototype.addUnitySocket = function (socket) {
-        this.unitySockets.push(socket);
-    };
-    Game.prototype.removeUnitySocket = function (playerId) {
-        var _this = this;
-        this.unitySockets.forEach(function (unitySocket, i) {
-            if (unitySocket.playerId == playerId) {
-                //remove the disconnected player player from players array
-                _this.unitySockets.splice(i, 1);
-            }
-        });
-    };
-    Game.prototype.getUnitySocket = function () {
-        return this.unitySockets;
-    };
+    // public addUnitySocket(socket : UnitySocket){
+    //     this.unitySockets.push(socket);
+    // }
+    // public removeUnitySocket(playerId : string){
+    //     this.unitySockets.forEach((unitySocket : UnitySocket, i : number) =>{
+    //         if(unitySocket.playerId == playerId) {      
+    //             //remove the disconnected player player from players array
+    //             this.unitySockets.splice(i, 1)              
+    //         }
+    //     })
+    // }
+    // public getUnitySocket() : UnitySocket[]{
+    //     return this.unitySockets
+    // }
     Game.prototype.addBullet = function (bullet) {
         this.bullets.push(bullet);
     };
@@ -69,21 +69,44 @@ var Game = /** @class */ (function () {
     };
     Game.prototype.isDuplicatePlayer = function (userId) {
         var isDuplicate = false;
-        this.players.forEach(function (player) {
+        this.gameConnections.forEach(function (gameConnection) {
             //if we find a duplicate add one to it instance count
-            if (player.id == userId) {
+            if (gameConnection.roomData.userId == userId) {
                 isDuplicate = true;
             }
         });
         return isDuplicate;
     };
-    Game.prototype.setPlayerAsDuplicate = function (playerId) {
-        this.players.find(function (player) {
-            if (player.id == playerId) {
-                player.isDuplicate = true;
+    Game.prototype.addGameConnection = function (gameConnection) {
+        this.gameConnections.push(gameConnection);
+    };
+    Game.prototype.addUnitySocketToGameConnection = function (roomData, socket) {
+        var foundIndex = this.gameConnections.findIndex(function (gameConnection) {
+            return gameConnection.roomData.gameName == roomData.gameName && gameConnection.unitySocket == null && gameConnection.roomData.userId == roomData.userId;
+        });
+        if (foundIndex >= 0) {
+            this.gameConnections[foundIndex].unitySocket = socket;
+        }
+    };
+    Game.prototype.removeGameConnection = function (userId) {
+        var _this = this;
+        this.gameConnections.forEach(function (gameConnection, i) {
+            if (gameConnection.roomData.userId == userId) {
+                //remove the disconnected player player from players array
+                _this.gameConnections.splice(i, 1);
             }
         });
     };
+    Game.prototype.getGameConnections = function () {
+        return this.gameConnections;
+    };
+    // public setPlayerAsDuplicate(playerId : string) : void{
+    //     this.players.find((player : Player) =>{
+    //         if(player.id == playerId){
+    //             player.isDuplicate = true
+    //         }
+    //     })
+    // }
     Game.prototype.createAndAddNewPlayer = function (username, userId) {
         var newPlayer = new player_1.default(username, userId);
         this.players.push(newPlayer);
