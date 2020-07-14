@@ -9,6 +9,7 @@ var http_1 = __importDefault(require("http"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var cors_1 = __importDefault(require("cors"));
 var dotenv_1 = __importDefault(require("dotenv"));
+var path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 var ExpressServer = /** @class */ (function () {
     function ExpressServer() {
@@ -18,10 +19,18 @@ var ExpressServer = /** @class */ (function () {
         this.app.use(cors_1.default({ 'origin': '*', 'methods': ['*', 'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST'], 'allowedHeaders': ['*', 'authorization', 'content-type'] }));
         //this.app.use(this.router)
         this.app.use('/', express_1.default.static("build/game"));
-        console.log(__dirname);
+        this.app.get("*", function (req, res) {
+            var gameName = req.originalUrl.substring(0, req.originalUrl.indexOf('?')).replace(/[^a-zA-Z ]/g, "");
+            var userId = Object.keys(req.query)[0];
+            var roomData = { userId: userId, gameName: gameName };
+            setTimeout(function () {
+                sendErrorIframe(roomData);
+            }, 5000);
+            res.sendFile(path_1.default.join("build/errorPage/error.html"), { root: process.env.ROOT_FOLDER });
+        });
         this.server = http_1.default.createServer(this.app);
         this.server.listen(process.env.PORT || 7000);
-        this.socketInstance = socketInstance_1.default.getSocketInstance(this.server);
+        ExpressServer.socketInstance = socketInstance_1.default.getSocketInstance(this.server);
         console.log('=====================================');
         console.log('SERVER SETTINGSbbbb:');
         console.log("Server running at - localhost:7000");
@@ -32,5 +41,11 @@ var ExpressServer = /** @class */ (function () {
     };
     return ExpressServer;
 }());
+var sendErrorIframe = function (roomData) {
+    var gameConnection = ExpressServer.socketInstance.gameInstance.getGameConnection(roomData);
+    if (gameConnection) {
+        gameConnection.reactSocket.emit("gameReady");
+    }
+};
 ExpressServer.initSerever();
 //# sourceMappingURL=index.js.map

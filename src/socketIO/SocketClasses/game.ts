@@ -24,6 +24,17 @@ export default class Game {
         this.unityIntervalSocketListener = new UnityIntervalSocketListener(this)
     }
 
+    public getGameConnection(roomData : RoomData) : GameConnection {
+        let _gameConnection : GameConnection
+        this.gameConnections.forEach((gameConnection) =>{
+            if(gameConnection.roomData.gameName == roomData.gameName && gameConnection.roomData.userId == roomData.userId){
+                _gameConnection = gameConnection
+            }
+        })
+        return _gameConnection
+    }
+
+    
     public despawnBullet(bullet : Bullet) {
         console.log("destroy bullet: ", bullet.id)
         const index = this.bullets.indexOf(bullet)
@@ -52,23 +63,6 @@ export default class Game {
     public getBullets() : Bullet[] {
         return this.bullets
     }
-
-    // public addUnitySocket(socket : UnitySocket){
-    //     this.unitySockets.push(socket);
-    // }
-
-    // public removeUnitySocket(playerId : string){
-    //     this.unitySockets.forEach((unitySocket : UnitySocket, i : number) =>{
-    //         if(unitySocket.playerId == playerId) {      
-    //             //remove the disconnected player player from players array
-    //             this.unitySockets.splice(i, 1)              
-    //         }
-    //     })
-    // }
-
-    // public getUnitySocket() : UnitySocket[]{
-    //     return this.unitySockets
-    // }
 
     public addBullet(bullet : Bullet){
         this.bullets.push(bullet);

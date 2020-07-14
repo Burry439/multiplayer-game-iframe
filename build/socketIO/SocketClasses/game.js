@@ -13,6 +13,15 @@ var Game = /** @class */ (function () {
         this.gameConnections = [];
         this.unityIntervalSocketListener = new unityIntervalSocketListener_1.default(this);
     }
+    Game.prototype.getGameConnection = function (roomData) {
+        var _gameConnection;
+        this.gameConnections.forEach(function (gameConnection) {
+            if (gameConnection.roomData.gameName == roomData.gameName && gameConnection.roomData.userId == roomData.userId) {
+                _gameConnection = gameConnection;
+            }
+        });
+        return _gameConnection;
+    };
     Game.prototype.despawnBullet = function (bullet) {
         console.log("destroy bullet: ", bullet.id);
         var index = this.bullets.indexOf(bullet);
@@ -39,20 +48,6 @@ var Game = /** @class */ (function () {
     Game.prototype.getBullets = function () {
         return this.bullets;
     };
-    // public addUnitySocket(socket : UnitySocket){
-    //     this.unitySockets.push(socket);
-    // }
-    // public removeUnitySocket(playerId : string){
-    //     this.unitySockets.forEach((unitySocket : UnitySocket, i : number) =>{
-    //         if(unitySocket.playerId == playerId) {      
-    //             //remove the disconnected player player from players array
-    //             this.unitySockets.splice(i, 1)              
-    //         }
-    //     })
-    // }
-    // public getUnitySocket() : UnitySocket[]{
-    //     return this.unitySockets
-    // }
     Game.prototype.addBullet = function (bullet) {
         this.bullets.push(bullet);
     };
